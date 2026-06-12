@@ -1,0 +1,35 @@
+package com.gustavo.consultorio.service;
+
+import com.gustavo.consultorio.entity.ConsultaEntity;
+import com.gustavo.consultorio.repository.ConsultaRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ConsultaService {
+
+    @Autowired
+    private ConsultaRepository consultaRepository;
+
+    public ConsultaEntity salvarConsulta(ConsultaEntity consulta){
+        if (consulta.getCliente() == null || consulta.getCliente().isEmpty()) {
+        throw new RuntimeException("O nome do cliente nao pode estar vazio!");
+        }
+        return consultaRepository.save(consulta);
+    }
+
+    public List<ConsultaEntity> listarTodas(){
+        return consultaRepository.findAll();
+    }
+
+    public Optional<ConsultaEntity> buscarPorId(Long id){
+        return consultaRepository.findById(id);
+    }
+
+    public void deletarConsulta(Long id){
+        consultaRepository.deleteById(id);
+    }
+}
