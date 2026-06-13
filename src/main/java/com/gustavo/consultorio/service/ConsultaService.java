@@ -6,71 +6,75 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
-
 
 @Service
 public class ConsultaService {
+
     @Autowired
-    private ConsultaRepository consultaService;
+    private ConsultaRepository consultaRepository;
 
-    public void verificarConflitos(ConsultaEntity consulta) {
+    private void validarConsulta(ConsultaEntity consulta, Long idIgnorado) {
 
-        boolean horarioOcupado =
-                consultaService.existsByMedicoAndHoraData(
-                        consulta.getMedico(),
-                        consulta.getHoraData());
-        System.out.println("Horario ocupado? " + horarioOcupado);
-
-        if (horarioOcupado) {
-            throw new RuntimeException(
-                    "Esse medico ja tem consulta nesse horario");
+        if (consulta.getPaciente() == null || consulta.getMedico() == null) {
+            throw new RuntimeException("Paciente e médico são obrigatórios");
         }
 
-        boolean salaOcupada =
-                consultaService.existsBySalaAndHoraData(
-                        consulta.getSala(),
-                        consulta.getHoraData());
-        System.out.println("Sala ocupada? " + salaOcupada);
+        Long medicoId = consulta.getMedico().getId();
 
-        if (salaOcupada) {
-            throw new RuntimeException(
-                    "Ja existe uma consulta nessa sala no mesmo horario");
+        if (idIgnorado == null) {
+            if (consultaRepository.existsByMedicoIdAndHoraData(medicoId, consulta.getHoraData())) {
+                throw new RuntimeException("Médico já tem consulta nesse horário");
+            }
+        } else {
+            if (consultaRepository.existsByMedicoIdAndHoraDataAndIdNot(medicoId, consulta.getHoraData(), idIgnorado)) {
+                throw new RuntimeException("Médico já tem consulta nesse horário");
+            }
+        }
+
+        if (idIgnorado == null) {
+            if (consultaRepository.existsBySalaAndHoraData(consulta.getSala(), consulta.getHoraData())) {
+                throw new RuntimeException("Sala já ocupada nesse horário");
+            }
+        } else {
+            if (consultaRepository.existsBySalaAndHoraDataAndIdNot(consulta.getSala(), consulta.getHoraData(), idIgnorado)) {
+                throw new RuntimeException("Sala já ocupada nesse horário");
+            }
         }
     }
 
     public ConsultaEntity salvarConsulta(ConsultaEntity consulta) {
-        if (consulta.getCliente() == null || consulta.getCliente().isEmpty()) {
-            throw new RuntimeException("O nome do cliente nao pode estar vazio!");
-        }
-        verificarConflitos(consulta);
-
-        return consultaService.save(consulta);
+        validarConsulta(consulta, null);
+        return consultaRepository.save(consulta);
     }
 
-    public ConsultaEntity atualizarConsulta(Long id, ConsultaEntity consultaAtualizada) {
-        ConsultaEntity consulta = consultaService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Nao encontramos esse id"));
+    public ConsultaEntity atualizarConsulta(Long id, ConsultaEntity atualizada) {
 
-        consulta.setCliente(consultaAtualizada.getCliente());
-        consulta.setMedico(consultaAtualizada.getMedico());
-        consulta.setHoraData(consultaAtualizada.getHoraData());
-        consulta.setSala(consultaAtualizada.getSala());
+        ConsultaEntity consulta = consultaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
 
-        verificarConflitos(consulta);
+        consulta.setPaciente(atualizada.getPaciente());
+        consulta.setMedico(atualizada.getMedico());
+        consulta.setHoraData(atualizada.getHoraData());
+        consulta.setSala(atualizada.getSala());
 
-        return consultaService.save(consulta);
+        validarConsulta(consulta, id);
+
+        return consultaRepository.save(consulta);
     }
 
     public List<ConsultaEntity> listarTodas() {
-        return consultaService.findAll();
+        return consultaRepository.findAll();
     }
 
-    public Optional<ConsultaEntity> buscarPorId(Long id) {
-        return consultaService.findById(id);
+    public ConsultaEntity buscarPorId(Long id) {
+        return consultaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Consulta não encontrada"));
     }
 
     public void deletarConsulta(Long id) {
-        consultaService.deleteById(id);
+        if (!consultaRepository.existsById(id)) {
+            throw new RuntimeException("Consulta não encontrada");
+        }
+        consultaRepository.deleteById(id);
     }
 }

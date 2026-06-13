@@ -2,7 +2,6 @@ package com.gustavo.consultorio.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,15 +18,15 @@ public abstract class PessoaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(unique = true)
-    private Long cpf;
+    @NotBlank
+    @Column(unique = true, nullable = false, length = 11)
+    private String cpf;
 
     @NotBlank
     private String nome;
 
     @NotBlank
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @NotBlank
