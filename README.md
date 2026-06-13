@@ -146,9 +146,7 @@ spring.jpa.hibernate.ddl-auto=update
 ## Pendências / Melhorias Futuras
 
 - [ ] Corrigir `pom.xml` — artifact IDs inválidos: `spring-boot-h2console`, `spring-boot-starter-webmvc`, `spring-boot-starter-data-jpa-test` e `spring-boot-starter-webmvc-test` não existem; os corretos são `spring-boot-starter-web` e `spring-boot-starter-test`
-- [ ] `MedicoController` e `PacienteController` chamam o repository diretamente — deveriam usar `MedicoService` e `PacienteService`
-- [ ] `@PathVariable` faltando em `listMedicosId` (`MedicoController`) e `listaByIdPacientes` (`PacienteController`)
-- [ ] `PacienteEntity` sem anotações Lombok (`@Getter`, `@Setter`, `@NoArgsConstructor`, `@AllArgsConstructor`)
+
 - [ ] Criar DTOs para não expor o campo `senha` nos responses
 - [ ] Tratamento global de exceções com `@RestControllerAdvice` (hoje erros retornam 500 genérico)
 - [ ] Paginação nas listagens (`Pageable`)
