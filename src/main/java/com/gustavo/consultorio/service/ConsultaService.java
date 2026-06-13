@@ -14,22 +14,34 @@ public class ConsultaService {
     @Autowired
     private ConsultaRepository consultaRepository;
 
-    public ConsultaEntity salvarConsulta(ConsultaEntity consulta){
+    public ConsultaEntity salvarConsulta(ConsultaEntity consulta) {
         if (consulta.getCliente() == null || consulta.getCliente().isEmpty()) {
-        throw new RuntimeException("O nome do cliente nao pode estar vazio!");
+            throw new RuntimeException("O nome do cliente nao pode estar vazio!");
         }
         return consultaRepository.save(consulta);
     }
 
-    public List<ConsultaEntity> listarTodas(){
+    public ConsultaEntity atualizarConsulta(Long id, ConsultaEntity consultaAtualizada) {
+        ConsultaEntity consulta = consultaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Nao encontramos esse id"));
+
+        consulta.setCliente(consultaAtualizada.getCliente());
+        consulta.setMedico(consultaAtualizada.getMedico());
+        consulta.setHoraData(consultaAtualizada.getHoraData());
+        consulta.setSala(consultaAtualizada.getSala());
+
+        return consultaRepository.save(consulta);
+    }
+
+    public List<ConsultaEntity> listarTodas() {
         return consultaRepository.findAll();
     }
 
-    public Optional<ConsultaEntity> buscarPorId(Long id){
+    public Optional<ConsultaEntity> buscarPorId(Long id) {
         return consultaRepository.findById(id);
     }
 
-    public void deletarConsulta(Long id){
+    public void deletarConsulta(Long id) {
         consultaRepository.deleteById(id);
     }
 }
