@@ -15,14 +15,14 @@ public class MedicoService {
     private MedicoRepository medicoRepository;
 
     //criar medico
-    public MedicoEntity criarMedico(MedicoEntity medico){
+    public MedicoEntity criarMedico(MedicoEntity medico) {
         return medicoRepository.save(medico);
     }
 
     // atualiza medico
-    public MedicoEntity atualizaMedico(Long id, MedicoEntity medicoAtualizado){
+    public MedicoEntity atualizaMedico(Long id, MedicoEntity medicoAtualizado) {
         MedicoEntity medico = medicoRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException("nao foi encontrado medico com esse id"));
+                .orElseThrow(() -> new RuntimeException("nao foi encontrado medico com esse id"));
 
         medico.setCrm(medicoAtualizado.getCrm());
         medico.setCpf(medicoAtualizado.getCpf());
@@ -34,7 +34,7 @@ public class MedicoService {
     }
 
     //lista todos os medicos
-    public List<MedicoEntity> listAllMedicos(){
+    public List<MedicoEntity> listAllMedicos() {
         return medicoRepository.findAll();
     }
 
@@ -44,7 +44,7 @@ public class MedicoService {
     }
 
     //deleta medicos por id
-    public void deletaMedico(Long id){
+    public void deletaMedico(Long id) {
         medicoRepository.deleteById(id);
     }
 }
