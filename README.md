@@ -1,156 +1,36 @@
-# Consultório API
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-API REST para gerenciamento de consultas médicas, desenvolvida com Spring Boot 4.1 e Java 21.
+## Getting Started
 
-## Tecnologias
-
-- Java 21
-- Spring Boot 4.1
-- Spring Data JPA
-- Spring Validation
-- H2 Database (em memória)
-- Lombok
-- Maven
-
-## Estrutura do Projeto
-
-```
-src/main/java/com/gustavo/consultorio/
-├── controller/
-│   ├── ConsultaController.java
-│   ├── MedicoController.java
-│   └── PacienteController.java
-├── entity/
-│   ├── PessoaEntity.java       ← superclasse abstrata (cpf, nome, email, senha)
-│   ├── MedicoEntity.java       ← extends PessoaEntity + crm único
-│   ├── PacienteEntity.java     ← extends PessoaEntity
-│   └── ConsultaEntity.java     ← @ManyToOne para Medico e Paciente
-├── repository/
-│   ├── ConsultaRepository.java ← queries de conflito com AndIdNot para update
-│   ├── MedicoRepository.java
-│   └── PacienteRepository.java
-└── service/
-    ├── ConsultaService.java    ← validação de conflitos (create e update)
-    ├── MedicoService.java
-    └── PacienteService.java
-```
-
-## Como Rodar
-
-### Pré-requisitos
-
-- Java 21+
-- Maven (ou use o `mvnw` incluído)
-
-### Rodando a aplicação
+First, run the development server:
 
 ```bash
-./mvnw spring-boot:run
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-A aplicação sobe em `http://localhost:8080`.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### H2 Console
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-Acesse o banco em memória via browser em `http://localhost:8080/h2-console`.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Adicionar em `src/main/resources/application.properties`:
+## Learn More
 
-```properties
-spring.datasource.url=jdbc:h2:mem:consultoriodb
-spring.h2.console.enabled=true
-spring.jpa.show-sql=true
-spring.jpa.hibernate.ddl-auto=update
-```
+To learn more about Next.js, take a look at the following resources:
 
-## Endpoints
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### Médicos `/medicos`
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-| Método | Rota            | Descrição          |
-|--------|-----------------|--------------------|
-| POST   | `/medicos`      | Cadastrar médico   |
-| GET    | `/medicos`      | Listar todos       |
-| GET    | `/medicos/{id}` | Buscar por ID      |
-| PUT    | `/medicos/{id}` | Atualizar médico   |
-| DELETE | `/medicos/{id}` | Remover médico     |
+## Deploy on Vercel
 
-**Exemplo de body (POST/PUT):**
-```json
-{
-  "cpf": "12345678901",
-  "nome": "Dr. João Silva",
-  "email": "joao@clinica.com",
-  "senha": "senha123",
-  "crm": "CRM/MG 12345"
-}
-```
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
----
-
-### Pacientes `/pacientes`
-
-| Método | Rota              | Descrição            |
-|--------|-------------------|----------------------|
-| POST   | `/pacientes`      | Cadastrar paciente   |
-| GET    | `/pacientes`      | Listar todos         |
-| GET    | `/pacientes/{id}` | Buscar por ID        |
-| PUT    | `/pacientes/{id}` | Atualizar paciente   |
-| DELETE | `/pacientes/{id}` | Remover paciente     |
-
-**Exemplo de body (POST/PUT):**
-```json
-{
-  "cpf": "98765432100",
-  "nome": "Maria Souza",
-  "email": "maria@email.com",
-  "senha": "senha123"
-}
-```
-
----
-
-### Consultas `/consultas`
-
-| Método | Rota              | Descrição            |
-|--------|-------------------|----------------------|
-| POST   | `/consultas`      | Agendar consulta     |
-| GET    | `/consultas`      | Listar todas         |
-| GET    | `/consultas/{id}` | Buscar por ID        |
-| PUT    | `/consultas/{id}` | Atualizar consulta   |
-| DELETE | `/consultas/{id}` | Cancelar consulta    |
-
-**Exemplo de body (POST/PUT):**
-```json
-{
-  "paciente": { "id": 1 },
-  "medico":   { "id": 1 },
-  "horaData": "2025-08-15T14:30:00",
-  "sala": "Sala 3"
-}
-```
-
-> O sistema valida conflitos de horário tanto na criação quanto na atualização:
-> não permite dois agendamentos para o mesmo médico ou mesma sala no mesmo horário.
-
-## Regras de Negócio
-
-- CPF, nome, e-mail e senha são obrigatórios para médico e paciente
-- CPF e e-mail são únicos por entidade
-- CRM é obrigatório e único para médicos
-- Consulta exige paciente, médico, data/hora e sala
-- Nenhum médico pode ter duas consultas no mesmo horário
-- Nenhuma sala pode ter duas consultas no mesmo horário
-- A verificação de conflito na atualização ignora a própria consulta (usando `AndIdNot`)
-
-## Pendências / Melhorias Futuras
-
-- [ ] Corrigir `pom.xml` — artifact IDs inválidos: `spring-boot-h2console`, `spring-boot-starter-webmvc`, `spring-boot-starter-data-jpa-test` e `spring-boot-starter-webmvc-test` não existem; os corretos são `spring-boot-starter-web` e `spring-boot-starter-test`
-- [ ] `MedicoController` e `PacienteController` chamam o repository diretamente — deveriam usar `MedicoService` e `PacienteService`
-- [ ] `@PathVariable` faltando em `listMedicosId` (`MedicoController`) e `listaByIdPacientes` (`PacienteController`)
-- [ ] `PacienteEntity` sem anotações Lombok (`@Getter`, `@Setter`, `@NoArgsConstructor`, `@AllArgsConstructor`)
-- [ ] Criar DTOs para não expor o campo `senha` nos responses
-- [ ] Tratamento global de exceções com `@RestControllerAdvice` (hoje erros retornam 500 genérico)
-- [ ] Paginação nas listagens (`Pageable`)
-- [ ] Autenticação com Spring Security + JWT
-- [ ] Testes unitários (JUnit 5 + Mockito) e de integração
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
