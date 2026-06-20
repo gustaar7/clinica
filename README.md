@@ -2,22 +2,30 @@
 
 Sistema full stack para gerenciamento de médicos, pacientes e consultas.
 
+## Acesso rápido (para portfólio)
+
+- Admin (teste):
+  - E-mail: consultorioDevTest@gmail.com
+  - Senha: consultorioTeste
+
+Observação: essas credenciais são apenas para demonstração/local.
+
 ## Tecnologias Utilizadas
 
 ### Backend
 
-* Java 21
-* Spring Boot
-* Spring Data JPA
-* H2 Database
-* Maven
+- Java 21
+- Spring Boot
+- Spring Data JPA
+- H2 Database
+- Maven
 
 ### Frontend
 
-* Next.js
-* React
-* TypeScript
-* Tailwind CSS
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
 
 ---
 
@@ -25,27 +33,27 @@ Sistema full stack para gerenciamento de médicos, pacientes e consultas.
 
 ### Médicos
 
-* Cadastro de médicos
-* Listagem de médicos
-* Busca por ID
-* Atualização de cadastro
-* Remoção de médicos
+- Cadastro de médicos
+- Listagem de médicos
+- Busca por ID
+- Atualização de cadastro
+- Remoção de médicos
 
 ### Pacientes
 
-* Cadastro de pacientes
-* Listagem de pacientes
-* Busca por ID
-* Atualização de cadastro
-* Remoção de pacientes
+- Cadastro de pacientes
+- Listagem de pacientes
+- Busca por ID
+- Atualização de cadastro
+- Remoção de pacientes
 
 ### Consultas
 
-* Agendamento de consultas
-* Listagem de consultas
-* Busca por ID
-* Atualização de consultas
-* Cancelamento de consultas
+- Agendamento de consultas
+- Listagem de consultas
+- Busca por ID
+- Atualização de consultas
+- Cancelamento de consultas
 
 ---
 
@@ -198,17 +206,17 @@ http://localhost:3000
 
 ## Regras de Negócio
 
-* CPF obrigatório para médicos e pacientes
-* Nome obrigatório para médicos e pacientes
-* E-mail obrigatório para médicos e pacientes
-* Senha obrigatória para médicos e pacientes
-* CPF único por entidade
-* E-mail único por entidade
-* CRM obrigatório e único para médicos
-* Consulta exige médico, paciente, data/hora e sala
-* Não é permitido agendar dois atendimentos para o mesmo médico no mesmo horário
-* Não é permitido agendar duas consultas na mesma sala no mesmo horário
-* Atualizações ignoram a própria consulta na validação de conflito
+- CPF obrigatório para médicos e pacientes
+- Nome obrigatório para médicos e pacientes
+- E-mail obrigatório para médicos e pacientes
+- Senha obrigatória para médicos e pacientes
+- CPF único por entidade
+- E-mail único por entidade
+- CRM obrigatório e único para médicos
+- Consulta exige médico, paciente, data/hora e sala
+- Não é permitido agendar dois atendimentos para o mesmo médico no mesmo horário
+- Não é permitido agendar duas consultas na mesma sala no mesmo horário
+- Atualizações ignoram a própria consulta na validação de conflito
 
 ---
 
@@ -238,15 +246,15 @@ consultorio/
 
 ## Melhorias Futuras
 
-* Implementar autenticação JWT
-* Implementar Spring Security
-* Criar DTOs para respostas da API
-* Ocultar campo de senha nas respostas
-* Implementar paginação
-* Criar tratamento global de exceções
-* Adicionar testes unitários
-* Adicionar testes de integração
-* Implementar documentação com Swagger/OpenAPI
+- Implementar autenticação JWT
+- Implementar Spring Security
+- Criar DTOs para respostas da API
+- Ocultar campo de senha nas respostas
+- Implementar paginação
+- Criar tratamento global de exceções
+- Adicionar testes unitários
+- Adicionar testes de integração
+- Implementar documentação com Swagger/OpenAPI
 
 ---
 

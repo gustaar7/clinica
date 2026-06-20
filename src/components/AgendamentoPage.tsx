@@ -1,6 +1,9 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import Modal from './ui/Modal'
+import { useAuth } from './AuthProvider'
 import { IconActivity, IconCalendar, IconCheck, IconChevronRight, IconClock, IconStethoscope, IconUser } from '@tabler/icons-react'
 import { mockMedicos } from '@/lib/data'
 import { Medico } from '@/types'
@@ -43,7 +46,31 @@ export default function AgendamentoPage() {
   const goNext = () => setStep(stepOrder[currentIdx + 1])
   const goBack = () => setStep(stepOrder[currentIdx - 1])
 
+  const router = useRouter()
+  const { user, logout, loginAdmin } = useAuth()
+  const [showAdmin, setShowAdmin] = useState(false)
+  const [adminEmail, setAdminEmail] = useState('')
+  const [adminPass, setAdminPass] = useState('')
+  const [adminError, setAdminError] = useState('')
+
   const handleConfirm = () => setBooked(true)
+
+  function openAdmin() {
+    setAdminEmail('')
+    setAdminPass('')
+    setAdminError('')
+    setShowAdmin(true)
+  }
+
+  function handleAdminSave() {
+    const ok = loginAdmin(adminEmail, adminPass)
+    if (ok) {
+      setShowAdmin(false)
+      router.push('/admin')
+    } else {
+      setAdminError('Credenciais de admin inválidas')
+    }
+  }
 
   if (booked) return <SuccessScreen booking={booking} onNew={() => { setBooking(emptyBooking); setStep('especialidade'); setBooked(false) }} />
 
@@ -55,10 +82,31 @@ export default function AgendamentoPage() {
           <IconActivity size={20} color="#2563EB" />
           Consultório
         </div>
-        <a href="/admin" style={{ fontSize: 12, color: '#6B7280', textDecoration: 'none', padding: '6px 12px', borderRadius: 7, border: '0.5px solid #E2E5EB', background: '#F7F8FA' }}>
-          Área admin →
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          {user ? (
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 13, fontWeight: 600 }}>{user.nome}</div>
+              <div style={{ fontSize: 12, color: '#6B7280' }}>{user.email}</div>
+            </div>
+          ) : (
+            <a href="/" style={{ fontSize: 12, color: '#6B7280', textDecoration: 'none' }}>Entrar</a>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <button onClick={openAdmin} style={{ fontSize: 12, color: '#6B7280', textDecoration: 'none', padding: '6px 12px', borderRadius: 7, border: '0.5px solid #E2E5EB', background: '#F7F8FA', cursor: 'pointer' }}>Painel admin</button>
+            {user && <button onClick={() => logout()} style={{ marginTop: 6, fontSize: 12, background: 'transparent', border: 'none', color: '#9CA3AF', cursor: 'pointer' }}>Sair</button>}
+          </div>
+        </div>
       </header>
+
+      {showAdmin && (
+        <Modal title="Login admin" onClose={() => setShowAdmin(false)} onSave={handleAdminSave}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <input placeholder="E-mail" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} style={{ padding: '10px 12px', borderRadius: 8, border: '0.5px solid #D1D5DB' }} />
+            <input placeholder="Senha" type="password" value={adminPass} onChange={(e) => setAdminPass(e.target.value)} style={{ padding: '10px 12px', borderRadius: 8, border: '0.5px solid #D1D5DB' }} />
+            {adminError && <div style={{ color: '#dc2626' }}>{adminError}</div>}
+          </div>
+        </Modal>
+      )}
 
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '32px 16px 64px' }}>
         {/* Hero */}
